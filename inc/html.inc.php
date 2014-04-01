@@ -45,6 +45,12 @@ EOT;
 EOT;
 	}
 
+	if ($CONFIG['sortable']) {
+		echo <<<EOT
+			<script type="text/javascript" src="{$CONFIG['weburl']}js/sorttable.js"></script>
+EOT;
+	}
+
 echo <<<EOT
 </head>
 <body>
@@ -183,7 +189,7 @@ function host_summary($cat, $hosts) {
 
 	printf('<fieldset id="%s">', $cat);
 	printf('<legend>%s</legend>', $cat);
-	echo "<table class=\"summary\">\n";
+	echo "<table class=\"summary sortable\">\n";
 
 	$row_style = array(0 => "even", 1 => "odd");
 	$host_counter = 0;
