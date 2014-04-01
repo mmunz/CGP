@@ -3,6 +3,9 @@
 # Title of the page
 $CONFIG['title'] = 'Freifunk Augsburg Monitoring';
 
+# What is shown as title for the uncategorized hosts
+$CONFIG['uncategorizedHeader'] = 'Nodes';
+
 # collectd version
 $CONFIG['version'] = 5;
 

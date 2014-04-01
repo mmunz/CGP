@@ -23,7 +23,7 @@ $uhosts = array_diff($chosts, $h);
 
 # show all uncategorized hosts
 if ($uhosts) {
-	host_summary('uncategorized', $uhosts);
+	host_summary($CONFIG['uncategorizedHeader'], $uhosts);
 }
 
 html_end();
