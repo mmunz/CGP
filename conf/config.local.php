@@ -1,5 +1,8 @@
 <?php
 
+# Title of the page
+$CONFIG['title'] = 'Freifunk Augsburg Monitoring';
+
 # collectd version
 $CONFIG['version'] = 5;
 

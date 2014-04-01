@@ -56,7 +56,7 @@ echo <<<EOT
 <body>
 
 <div id="header">
-  <h1><a href="{$CONFIG['weburl']}">Collectd Graph Panel</a></h1>
+  <h1><a href="{$CONFIG['weburl']}">{$CONFIG['title']}</a></h1>
 </div>
 
 <div id="content">

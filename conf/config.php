@@ -1,5 +1,8 @@
 <?php
 
+# Title of the page
+$CONFIG['title'] = 'Collectd Graph Panel';
+
 # collectd version
 $CONFIG['version'] = 5;
 
