@@ -188,6 +188,20 @@ function host_summary($cat, $hosts) {
 	$row_style = array(0 => "even", 1 => "odd");
 	$host_counter = 0;
 
+	printf('<tr>');
+	printf('<th></th>');
+
+
+	if ($CONFIG['showload']) {
+		printf('<th colspan="3">Load</th>');
+	}
+
+	if ($CONFIG['showleases']) {
+		printf('<th colspan="3">Leases</th>');
+	}
+	printf('</tr>');
+
+
 	foreach($hosts as $host) {
 		$host_counter++;
 
@@ -217,6 +231,24 @@ function host_summary($cat, $hosts) {
 						$class = ' class="warn"';
 
 					printf('<td%s>%.2f</td>', $class, $rrd_info[$info]);
+				}
+			}
+		}
+
+		if ($CONFIG['showleases']) {
+			collectd_flush(sprintf('%s/splash_leases/splash_leases', $host));
+			$rrd_info = $rrd->rrd_info($CONFIG['datadir'].'/'.$host.'/splash_leases/splash_leases.rrd');
+
+			# ignore if file does not exist
+			if (!$rrd_info)
+				continue;
+
+			if (isset($rrd_info['ds[leased].last_ds']) &&
+				isset($rrd_info['ds[whitelisted].last_ds']) &&
+				isset($rrd_info['ds[blacklisted].last_ds'])) {
+
+				foreach (array('ds[leased].last_ds', 'ds[whitelisted].last_ds', 'ds[blacklisted].last_ds') as $info) {
+					printf('<td>%.2f</td>', $rrd_info[$info]);
 				}
 			}
 		}
