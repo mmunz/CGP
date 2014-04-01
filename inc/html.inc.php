@@ -196,6 +196,11 @@ function host_summary($cat, $hosts) {
 		printf('<th colspan="3">Load</th>');
 	}
 
+	if ($CONFIG['showuptime']) {
+		printf('<th>Uptime</th>');
+	}
+
+
 	if ($CONFIG['showleases']) {
 		printf('<th colspan="3">Leases</th>');
 	}
@@ -235,6 +240,20 @@ function host_summary($cat, $hosts) {
 			}
 		}
 
+		if ($CONFIG['showuptime']) {
+			collectd_flush(sprintf('%s/uptime/uptime', $host));
+			$rrd_info = $rrd->rrd_info($CONFIG['datadir'].'/'.$host.'/uptime/uptime.rrd');
+
+			# ignore if file does not exist
+			if (!$rrd_info)
+				continue;
+
+			if (isset($rrd_info['ds[value].last_ds'])) {
+				$uptime = $rrd_info['ds[value].last_ds'] / 86400;
+				printf('<td>%.2f days</td>', $uptime);
+			}
+		}
+
 		if ($CONFIG['showleases']) {
 			collectd_flush(sprintf('%s/splash_leases/splash_leases', $host));
 			$rrd_info = $rrd->rrd_info($CONFIG['datadir'].'/'.$host.'/splash_leases/splash_leases.rrd');
@@ -252,6 +271,7 @@ function host_summary($cat, $hosts) {
 				}
 			}
 		}
+
 
 		print "</tr>\n";
 	}

@@ -32,6 +32,10 @@ $CONFIG['showload'] = true;
 #show leases on overview page
 $CONFIG['showleases'] = true;
 
+#show leases on overview page
+$CONFIG['showuptime'] = true;
+
+
 $CONFIG['term'] = array(
 	'2hour'	 => 3600 * 2,
 	'8hour'	 => 3600 * 8,
