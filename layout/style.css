@@ -50,7 +50,7 @@ table.summary th {
 }
 
 table.summary tr.even {
-/*	background: #eeeeee; */
+	background: #eeeeee; 
 }
 
 table.summary tr.odd {
@@ -59,7 +59,7 @@ table.summary tr.odd {
 
 table.summary td {
 	width: 50px;
-	text-align: right;
+	text-align: left;
 }
 
 img {
