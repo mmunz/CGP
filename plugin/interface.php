@@ -30,6 +30,9 @@ $obj->colors = array(
 $obj->rrd_format = '%5.1lf%s';
 
 $instance = $CONFIG['version'] < 5 ? 'tinstance' : 'pinstance';
+if ($obj->args[$instance] == '') {
+        $instance = 'tinstance';
+}
 switch($obj->args['type']) {
 	case 'if_errors':
 		$obj->rrd_title = sprintf('Interface Errors (%s)', $obj->args[$instance]);
