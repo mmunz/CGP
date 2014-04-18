@@ -57,7 +57,7 @@ $CONFIG['term'] = array(
 );
 
 # show graphs in bits or bytes
-$CONFIG['network_datasize'] = 'bytes';
+$CONFIG['network_datasize'] = 'bits';
 
 # "png", "svg", "canvas" or "hybrid" (canvas on detail page, png on the others) graphs
 $CONFIG['graph_type'] = 'png';
@@ -75,7 +75,7 @@ $CONFIG['graph_smooth'] = true;
 $CONFIG['cache'] = 59;
 
 # page refresh (in seconds)
-$CONFIG['page_refresh'] = '60';
+$CONFIG['page_refresh'] = '10';
 
 # default width/height of the graphs
 $CONFIG['width'] = 400;

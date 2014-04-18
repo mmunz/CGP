@@ -22,11 +22,13 @@ body {
 #footer {
 	clear: both;
 	padding: 0px 20px 16px;
+        margin-bottom: 300px;
 }
 
 h1 {
 	margin-top: 0;
 	font-size: 1em;
+        width: 66%;
 }
 
 h2 {
@@ -148,4 +150,55 @@ legend {
 	color: red;
 	font-weight: normal;
 	text-shadow: 0 0 1px red;
+}
+
+/* for json based overview */
+
+div.detail {
+    width: 320px;
+    min-width: 320px;
+    position: absolute;
+    left: -355px;
+    top: 0;
+    background-color: #eeeeee;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: none;
+    padding: 15px;
+    z-index: 10;
+    -webkit-box-shadow: 1px 1px 2px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    1px 1px 2px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         1px 1px 2px 0px rgba(50, 50, 50, 0.75);
+}
+
+.summary .container {
+    position: relative;
+}
+
+div.detail ul {
+    margin: 0;
+}
+
+div.detail ul li {
+    margin-left: 0;
+}
+
+div.detail ul li > label {
+    float: left;
+    font-weight: bold;
+    width: 150px;
+    min-width: 150px;
+}
+
+div.detail legend {
+    font-size: 70%;
+    font-style: italic;
+    margin: 10px 0 0 0;
+}
+
+#totals {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 6px 10px;
+    color: #ffffff;
 }

@@ -16,7 +16,8 @@ function collectd_hosts() {
 		if(!is_dir($CONFIG['datadir'].'/'.$v))
 			unset($dir[$k]);
 	}
-	return($dir);
+        natcasesort($dir);
+	return $dir;
 }
 
 

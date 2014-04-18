@@ -7,12 +7,12 @@ require_once 'inc/rrdtool.class.php';
 require_once 'inc/functions.inc.php';
 require_once 'inc/collectd.inc.php';
 
-function html_start() {
-	global $CONFIG;
+function html_start($refresh = True) {
+    global $CONFIG;
 
-	$path = htmlentities(breadcrumbs());
+    $path = htmlentities(breadcrumbs());
 
-	echo <<<EOT
+    echo <<<EOT
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +22,7 @@ function html_start() {
 	<meta name="viewport" content="width=1050, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 
 EOT;
-	if (isset($CONFIG['page_refresh']) && is_numeric($CONFIG['page_refresh'])) {
+	if (isset($CONFIG['page_refresh']) && is_numeric($CONFIG['page_refresh']) && $refresh != false) {
 		echo <<<EOT
 	<meta http-equiv="refresh" content="{$CONFIG['page_refresh']}">
 
@@ -45,11 +45,7 @@ EOT;
 EOT;
 	}
 
-	if ($CONFIG['sortable']) {
-		echo <<<EOT
-			<script type="text/javascript" src="{$CONFIG['weburl']}js/sorttable.js"></script>
-EOT;
-	}
+
 
 echo <<<EOT
 </head>
@@ -57,6 +53,7 @@ echo <<<EOT
 
 <div id="header">
   <h1><a href="{$CONFIG['weburl']}">{$CONFIG['title']}</a></h1>
+  <div id="totals">Hosts monitored: <span id="hosts-total">-</span></div>
 </div>
 
 <div id="content">
@@ -85,6 +82,8 @@ function html_end() {
 <div id="footer">
 <hr><span class="small"><a href="http://pommi.nethuis.nl/category/cgp/" rel="external">Collectd Graph Panel</a> ({$version}) is distributed under the <a href="{$CONFIG['weburl']}doc/LICENSE" rel="licence">GNU General Public License (GPLv3)</a></span>
 </div>
+
+
 
 EOT;
 
@@ -187,6 +186,7 @@ function host_summary($cat, $hosts) {
 
 	$rrd = new RRDTool($CONFIG['rrdtool']);
 
+        printf('<div id="testdiv"></div>');
 	printf('<fieldset id="%s">', $cat);
 	printf('<legend>%s</legend>', $cat);
 	echo "<table class=\"summary sortable\">\n";
@@ -197,19 +197,8 @@ function host_summary($cat, $hosts) {
 	printf('<tr>');
 	printf('<th></th>');
 
-
-	if ($CONFIG['showload']) {
-		printf('<th colspan="3">Load</th>');
-	}
-
-	if ($CONFIG['showuptime']) {
-		printf('<th>Uptime</th>');
-	}
-
-
-	if ($CONFIG['showleases']) {
-		printf('<th colspan="3">Leases</th>');
-	}
+        printf('<th>Uptime</th><th>Load</th><th>Clients</th><th>Traffic</th>');
+        
 	printf('</tr>');
 
 
@@ -219,71 +208,26 @@ function host_summary($cat, $hosts) {
 		$cores = count(group_plugindata(collectd_plugindata($host, 'cpu')));
 
 		printf('<tr class="%s">', $row_style[$host_counter % 2]);
-		printf('<th><a href="%shost.php?h=%s">%s</a></th>',
-			$CONFIG['weburl'],$host, $host);
-
-		if ($CONFIG['showload']) {
-			collectd_flush(sprintf('%s/load/load', $host));
-			$rrd_info = $rrd->rrd_info($CONFIG['datadir'].'/'.$host.'/load/load.rrd');
-
-			# ignore if file does not exist
-			if (!$rrd_info)
-				continue;
-
-			if (isset($rrd_info['ds[shortterm].last_ds']) &&
-				isset($rrd_info['ds[midterm].last_ds']) &&
-				isset($rrd_info['ds[longterm].last_ds'])) {
-
-				foreach (array('ds[shortterm].last_ds', 'ds[midterm].last_ds', 'ds[longterm].last_ds') as $info) {
-					$class = '';
-					if ($cores > 0 && $rrd_info[$info] > $cores * 2)
-						$class = ' class="crit"';
-					elseif ($cores > 0 && $rrd_info[$info] > $cores)
-						$class = ' class="warn"';
-
-					printf('<td%s>%.2f</td>', $class, $rrd_info[$info]);
-				}
-			}
-		}
-
-		if ($CONFIG['showuptime']) {
-			collectd_flush(sprintf('%s/uptime/uptime', $host));
-			$rrd_info = $rrd->rrd_info($CONFIG['datadir'].'/'.$host.'/uptime/uptime.rrd');
-
-			# ignore if file does not exist
-			if (!$rrd_info)
-				continue;
-
-			if (isset($rrd_info['ds[value].last_ds'])) {
-				$uptime = $rrd_info['ds[value].last_ds'] / 86400;
-				printf('<td>%.2f days</td>', $uptime);
-			}
-		}
-
-		if ($CONFIG['showleases']) {
-			collectd_flush(sprintf('%s/splash_leases/splash_leases', $host));
-			$rrd_info = $rrd->rrd_info($CONFIG['datadir'].'/'.$host.'/splash_leases/splash_leases.rrd');
-
-			# ignore if file does not exist
-			if (!$rrd_info)
-				continue;
-
-			if (isset($rrd_info['ds[leased].last_ds']) &&
-				isset($rrd_info['ds[whitelisted].last_ds']) &&
-				isset($rrd_info['ds[blacklisted].last_ds'])) {
-
-				foreach (array('ds[leased].last_ds', 'ds[whitelisted].last_ds', 'ds[blacklisted].last_ds') as $info) {
-					printf('<td>%.2f</td>', $rrd_info[$info]);
-				}
-			}
-		}
-
-
+		printf('<th id=%s><a href="%shost.php?h=%s">%s</a></th>',
+			$host, $CONFIG['weburl'],$host, $host);
+                printf('<td id="%s-uptime"></td>', $host);
+                printf('<td id="%s-load"></td>', $host);
+                printf('<td id="%s-clients"></td>', $host);
+                printf('<td id="%s-interfaces"></td>', $host);
 		print "</tr>\n";
 	}
 
 	echo "</table>\n";
 	echo "</fieldset>\n";
+        echo <<<EOT
+            <script type="text/javascript" src="{$CONFIG['weburl']}js/spin.js"></script>
+            <script type="text/javascript" src="{$CONFIG['weburl']}js/summary.js"></script>
+EOT;
+        if ($CONFIG['sortable']) {
+            echo <<<EOT
+		<script type="text/javascript" src="{$CONFIG['weburl']}js/sorttable.js"></script>
+EOT;
+	}
 }
 
 

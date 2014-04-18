@@ -38,7 +38,7 @@ class Type_Default {
 		if (empty($this->width)) $this->width = $config['width'];
 		$this->height = GET('y');
 		if (empty($this->height)) $this->height = $config['height'];
-		$this->graph_type = $config['graph_type'];
+ 		$this->graph_type = $config['graph_type'];
 		$this->negative_io = $config['negative_io'];
 		$this->graph_smooth = $config['graph_smooth'];
 	}
@@ -77,6 +77,7 @@ class Type_Default {
 			'tinstance' => GET('ti'),
 		);
 		$this->seconds = GET('s');
+                //$this->graph_type = GET('t');
 	}
 
 	function validate_color($color) {
