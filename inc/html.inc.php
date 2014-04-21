@@ -53,7 +53,7 @@ echo <<<EOT
 
 <div id="header">
   <h1><a href="{$CONFIG['weburl']}">{$CONFIG['title']}</a></h1>
-  <div id="totals">Hosts monitored: <span id="hosts-total">-</span></div>
+  <div id="totals"><span id="hosts-total"></span></div>
 </div>
 
 <div id="content">

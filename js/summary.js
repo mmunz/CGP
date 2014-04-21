@@ -90,11 +90,14 @@ function ajaxreq() {
     if (xmlhttpp.readyState==4 && xmlhttpp.status==200) {
             var hostsTotal = 0;
             json = JSON.parse(xmlhttpp.responseText);
-            hostsTotal = Object.keys(json).length;
-            for (var host in json) {
+            hostsTotal = Object.keys(json['data']).length;
+            for (var host in json['data']) {
+                if(document.getElementById(host) === null) {
+                    break;
+                }
                 // uptime
-                if ('uptime' in json[host] ) {
-                    uptime = json[host]['uptime']
+                if ('uptime' in json['data'][host] ) {
+                    uptime = json['data'][host]['uptime']
                     if (uptime && 'value' in uptime) {
                         uptime = uptime['value'] / 86400
                         var graph = graphUrl(host, 'uptime', '5184000');
@@ -107,8 +110,8 @@ function ajaxreq() {
                     document.getElementById(host + '-uptime').innerHTML='-';
                 }
                 // load
-                if ('load' in json[host] ) {
-                    load = json[host]['load']
+                if ('load' in json['data'][host] ) {
+                    load = json['data'][host]['load']
                     if (load && 'shortterm' in load) {
                         loadshort = load['shortterm']
                         var details = listItem("1 min avg", loadshort);
@@ -123,8 +126,8 @@ function ajaxreq() {
                     document.getElementById(host + '-load').innerHTML='-';
                 }
                 // leases
-                if ('splash_leases' in json[host] ) {
-                    leases = json[host]['splash_leases'];
+                if ('splash_leases' in json['data'][host] ) {
+                    leases = json['data'][host]['splash_leases'];
                     if (leases && 'leased' in leases && 'whitelisted' in leases) {
                         leased = leases['leased'];
                         whitelisted = leases['whitelisted'];
@@ -138,9 +141,9 @@ function ajaxreq() {
                     document.getElementById(host + '-clients').innerHTML='-';
                 }
                 // traffic
-                if ('interface' in json[host] ) {
+                if ('interface' in json['data'][host] ) {
 
-                    interfaces = json[host]['interface'];
+                    interfaces = json['data'][host]['interface'];
 
                     tx = false;
                     rx = false;
@@ -169,7 +172,11 @@ function ajaxreq() {
                 }
             }
             init();
-            document.getElementById('hosts-total').innerHTML=hostsTotal;
+            var summary = ' Splash leases: ' + (json['summary']['splash_leases']['leased'] + json['summary']['splash_leases']['whitelisted'])
+            var tx = toKbit(json['summary']['interface']['tx'])
+            var rx = toKbit(json['summary']['interface']['rx'])
+            summary += ' Traffic: TX: ' + tx + ' kbps' + ' RX: ' + rx + ' kbps';
+            document.getElementById('hosts-total').innerHTML='Hosts monitored: ' + hostsTotal + summary;
             window.setTimeout("ajaxreq()", 10000);
         }
     }
